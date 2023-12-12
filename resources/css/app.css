@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.robotocd{
+    font-family: 'Roboto Condensed';
+}
+
+.galada{
+    font-family: 'Galada';
+}
+
+.poppins {
+    font-family: 'Poppins';
+}
+
+.scrollable-container {
+    height: 400px; /* Adjust the height as per your design */
+    overflow-y: scroll;
+}
+
+.scrolls::-webkit-scrollbar {
+    width: 0;
+}
+
+.smooth {
+  transition: all 1s ease-in;
+}
