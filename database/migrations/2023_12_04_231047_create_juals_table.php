@@ -12,15 +12,17 @@ class CreateJualsTable extends Migration
      * @return void
      */
     public function up()
-    {
-        Schema::create('juals', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->bigInteger('price');
-            $table->string('amount');
-            $table->string('images');
-        });
-    }
+{
+    Schema::create('juals', function (Blueprint $table) {
+        $table->bigIncrements('id');
+        $table->string('title');
+        $table->bigInteger('price');
+        $table->string('amount'); // asumsi 'amount' ada dalam database Anda, jika tidak hapus baris ini
+        $table->string('images');
+        $table->timestamps();
+    });
+}
+
 
     /**
      * Reverse the migrations.

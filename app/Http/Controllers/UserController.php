@@ -23,14 +23,14 @@ class UserController extends Controller
 
     #Sistem Login
     public function doLogin(Request $request){
-        $credential = $request->only('email', 'password');
+        $credentials = $request->only('email', 'password');
 
-        if (auth()->attempt($credential)) {
-            return redirect()->route('main');
-        } else {
-            return redirect()->route('login')->with("error", 'Email dan Password anda tidak ditemukan');
-        }
-        
+    if (Auth::attempt($credentials, $request->get('remember'))) {
+        return redirect()->route('home');
+    }
+
+    return redirect()->route('login')->with("error", 'Email dan Password anda tidak ditemukan');
+
         $user = Auth::getProvider()->retriveByCredentials($credential);
 
         Auth::login($user, $request->get('remember'));
@@ -38,14 +38,22 @@ class UserController extends Controller
         return $this->authenticated($request, $user);
     }
 
-    public function doLogout(Request $request){
+    // public function doLogout(Request $request){
+    //     Auth::logout();
+
+    //     $request->session()->invalidate();
+    //     $request->session()->regenerateToken();
+    //     return redirect()->route('login');
+    // }
+    
+    public function logout()
+    {
         Auth::logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect()->route('login');
+    
+        // Redirect to the login page or any other page after logout
+        return redirect()->route('login')->with('success', 'You have been logged out successfully.');
     }
-
+    
 
 // #Sistem Register
     public function store(Request $request){

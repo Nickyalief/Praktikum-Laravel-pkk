@@ -11,7 +11,9 @@ class Jual extends Model
 
     protected $fillable = [
         'title',
-        'image',
         'price',
+        'amount', // asumsi 'amount' ada dalam database Anda, jika tidak hapus baris ini
+        'images',
     ];
+    
 }

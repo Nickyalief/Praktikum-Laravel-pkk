@@ -13,19 +13,42 @@ class Gointo extends Controller
         return view('page.home');
     }
 
+    public function about(){
+        return view('page.about');
+    }
+
+    public function contact(){
+        return view('page.contact');
+    }
+
+    public function menu(){
+        return view('page.menu');
+    }
+
+
     public function product(){
         $products = Jual::all(); // Menggunakan model Jual
         return view('page.product', compact('products'));
     }
 
     public function ship(){
-        
-        $cart = Jual::all();
-        // return $this->showCart();
-
-        return view('page.ship', compact('cart'));
+        $cart = session()->get('cart', []);
+        $cartTotal = $this->calculateCartTotal($cart);
+    
+        return view('page.ship', compact('cart', 'cartTotal'));
     }
-
+    
+    private function calculateCartTotal($cart)
+    {
+        $total = 0;
+    
+        foreach ($cart as $item) {
+            $total += $item['price'] * $item['quantity'];
+        }
+    
+        return $total;
+    }
+    
     public function product1(){
         $juals = Jual::all();
 
@@ -66,21 +89,28 @@ class Gointo extends Controller
 
     public function checkout() {
         $cart = session()->get('cart', []);
-    
-        // Save the cart data to the database
+
         foreach ($cart as $productId => $cartItem) {
-            $jual = Jual::findOrFail($productId);
-            $jual->update(['quantity' => $cartItem['quantity']]);
+            $this->storeOrder($productId, $cartItem['quantity']);
         }
-    
-        // Clear the session cart
+
         session()->forget('cart');
-    
-        // Redirect to the ship page
-        return redirect()->route('ship')->with('success', 'Checkout successful'); // Fix the typo
+
+        return redirect()->route('ship')->with('success', 'Checkout successful');
     }
     
-    
+    private function storeOrder($productId, $quantity) {
+        $product = Jual::findOrFail($productId);
+
+        $order = new Order([
+            'product_id' => $productId,
+            'quantity' => $quantity,
+        ]);
+
+        $order->save();
+
+        // Add logic to update stock or perform other actions if needed
+    }
 
     public function addAmount(Request $request) {
             $productId = $request->input('productId');
@@ -117,5 +147,22 @@ class Gointo extends Controller
             return redirect()->back();
         }
         
+public function placeOrder(Request $request)
+{
+    // Retrieve necessary data from the request or session
+    $cart = session()->get('cart', []);
+    $cartTotal = $this->calculateCartTotal($cart);
+
+    // Perform any additional logic for order placement
+    // ...
+
+    // Clear the cart after placing the order
+    session()->forget('cart');
+
+    // Redirect to a thank you or order confirmation page
+    return view('page.order_confirmation', compact('cartTotal'));
+}
+
+
 
 }
